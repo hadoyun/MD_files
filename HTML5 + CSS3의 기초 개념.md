@@ -83,6 +83,12 @@ HTML은 태그라는 언어로 구성되어있는데, 태그의 특징은 <>기�
 
 <> 기호는 오직 HTML문서에서만 사용됩니다.
 
+->헤드 태그를 없에서 CSS와 head를 지우고싶다면 아래의 코드를 사용!
+
+```javascript
+document.head.parentNode.removeChild(document.head);
+```
+
 
 
 ### < !DOCTYPE html >
@@ -94,6 +100,10 @@ HTML문서의 첫번째 줄에 나타나야하는 부분이다.
 현재 표준 규격은 HTML5로써 특별한 이유가 없다면 모든 웹사이트 부분에서 < !DOCTYPE html >을 사용한다.
 
 ! HTML문서를 수정할 경우가 있는 경우, HTML5 문서가 아니면 CSS3 속성이 적용되지 않는다는 것만 알면 된다.
+
+
+
+VS Code 등에서 쉽게 사용할 수 있는 방법 doc를 치면 자동적으로 <!DOCYPE html>을 포함한 html 5 기본 코드가 완성! 된다.
 
 
 
@@ -109,7 +119,7 @@ HTML문서의 첫번째 줄에 나타나야하는 부분이다.
 
 
 
-### HTML5의 기본 태그
+# HTML5의 기본 태그
 
 <html> -  문서정의 태그 최상위 태그로 웹문서의 시작과 끝을 지정한다.
 
@@ -122,7 +132,6 @@ HTML문서의 첫번째 줄에 나타나야하는 부분이다.
 
 <title > - 제목 태그 : 웹문서의 제목을 지정한다.
      브라우저 창 위쪽의 타이틀 바 영역에 표시한다.
-
 <body> 내용 태그 웹문서로 표현될 실제 내용을 지정한다.
 
  대부분의 내용은 실제로 웹 브라우저에 표시된다.
@@ -151,6 +160,27 @@ head 내부에는 현재 HTML 문서에 대한 정보와 CSS 파일 및 속성, 
 
 
 
+### div 태그
+
+```html
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 			"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+    <title>Insert title here</title>
+</head>
+    
+<body>
+	<div style="background-color:red">첫번째 영역</div>
+	<div style="width:100px; height:100px; background-color:#CF0">두번째 영역</div>
+	<div style="width:50px; height:50px; border:1px solid black; background-		color:yellow">세번째 영역</div>
+	<div style="width:100px; height:50px; border:3px solid black; float:right">네번째 영역</div>
+	<div style="width:30; height:30px background-color:green; float:left; margin:30px;">네번째 영역</div>
+</body>
+</html>
+```
 
 
 
@@ -158,6 +188,179 @@ head 내부에는 현재 HTML 문서에 대한 정보와 CSS 파일 및 속성, 
 
 
 
+div 속성입니다.
 
 
+
+**1.** style은 <div>태그의 스타일을 지정해주는 것으로 다른 속성들을 사용할 수 있게끔 해줍니다. <div style="">
+
+**2.** width는 <div>의 가로 크기를 정해줍니다. px(픽셀)단위로도 정할 수 있고 %(비율)단위로도 정할 수 있습니다.
+
+**3.** height는 <div>의 세로 크기를 정해줍니다. px(픽셀)단위로도 정할 수 있고 %(비율)단위로도 정할 수 있습니다.
+
+**4.** border은 <div>의 테두리의 굵기를 정해줍니다. 숫자가 클수록 굵기가 굵어집니다.
+
+**5.** background-color은 <div>태그의 배경색상을 정하는 속성입니다.
+
+**6.** float은 div의 정렬(좌,우)을 하는 속성입니다. 가운데정렬은 안됩니다.
+
+**7.** margin은 div의 정렬기준 끝에서부터 여백을 주는 속성입니다. (margin-top,margin,-bottom,margin-left,margin-right)
+
+
+
+### P 태그 
+
+<p></p> 태그는 paragraph, 즉 문단의 약자로, 하나의 문단을 만들 때 쓰입니다.
+```html
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>오디오 재생입니다!</title>
+</head>
+<body>
+    <audio controls="controls">
+        <source src="video/">
+    </audio>
+    <p>
+        여기에 사용된 
+        <a href="https://www.youtube.com/watch?v=md7dK5-qvHc">
+        mps 파일
+        </a>
+    </p>
+</body>
+</html>
+```
+
+### br 태그
+
+
+
+```html
+<html>
+	<body>
+		the
+		first
+		line<br>
+		the second line
+	</body>
+</html>
+
+//출력 결과
+//the first line
+//the second line
+```
+
+### aside 태그
+
+문서의 주요 내용과 간접적으로만 연관된 부분을 나타냅니다. 주로 사이드바 혹은 콜아웃 박스로 표현합니다.
+
+```html
+<article>
+    <aside>
+        <h2>사이트바 제목</h2>
+        <section>
+            <ul>
+                <li>사이드 메뉴 1</li>
+                <li>사이드 메뉴 2</li>
+                <li>사이드 메뉴 3</li>
+            </ul>
+        </section>
+    </aside>
+</article>
+```
+
+
+
+
+
+## 
+
+
+
+
+
+# Canvas 태그와 기본적인 JAVAscript를 사용해서 그림을 그려보자!
+
+```html
+<head>
+    <meta ~~~~~~>
+    <style>
+        canvas {
+            border: 1px solid blue;
+        }
+    </style>
+    <title>canvas</title>
+</head>
+
+<body onload = "init()">
+    <canvas id="canvas" width="500" height="300"></canvas> // 이미지를 그릴 캔버스 지정 
+    
+```
+
+**step 1 ~ 캔버스 스타일 지정**
+
+**style 태그를 사용해서 canvas의 속성을 지정해준다. **
+
+```html
+    <style>
+        canvas {
+            border: 1px solid blue;
+        }
+    </style>
+```
+
+**step 2 - body  태그에서 onload 이벤트 호출!**
+
+```html
+<body onload = "init()">
+```
+
+혹은 
+
+```html
+<script language="javascript">
+  function init() {
+    <!-- 함수의 내용! --!>
+  }
+</script>
+```
+
+와 같이 함수를 미리 작성하고 사용할 수도 있다.
+
+**step3 - Canvas 태그를 사용하여 그림을 그릴 캔버스를 설정한다.**
+
+```html
+ <canvas id="canvas" width="500" height="300"></canvas>
+<!--canvas라는 이름의 크기 500 / 높이 300의 캔버스를 사용할 것이다.--!>
+```
+
+**step4 - script 태그 안에 js 함수 작성!**
+
+사용되는 js 함수
+
+getElementById(); ~ Canvas 태그로 설정된 id를 사용 설정된 canvas 를 가져온다(get).
+
+getContext(); - 
+
+``` html
+<script>
+        function init() {
+            var canvas = document.getElementById("canvas"); 
+            var ctx = canvas.getContext("2d");
+            draw(ctx);
+          
+            ctx.beginPath(); // 경로의 시작을 알림
+            
+            ctx.moveTo(0,0); //0,0에서 부터 그림 그리기
+            ctx.lineTo(500,300); // X축 500 Y축 300까지
+            
+            ctx.lineWidth = 2; // 선두깨
+            ctx.strokeStyle = "#0033ff"; // 선 색상 (파란색)
+
+            ctx.stroke(); // 선을 그려줌
+        }
+    </script>
+```
 

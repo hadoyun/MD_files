@@ -68,3 +68,35 @@
     });
 ```
 
+
+
+### 그래픽 프로그래밍 주의 사항!
+
+```js
+//var text_color = "rgb(0, 160, 123)"; 그래픽 프로그래밍은 매번 지웟다가 그리는 것을 반복하기 때문에 전역으로 선언하면 색이 한번만 바뀌어용...
+
+drawArray();
+
+function drawArray()
+{
+    for(var i = 0; i < array.length; ++i)
+    {   
+        var bar_color = 'rgb(' + 255 + ',' + (100 + (array[i] * 15)) + ',' + 100 + ')';
+
+        var text_color = "rgb(0, 160, 123)";
+        
+        if(i < sorted_count)
+        {
+            bar_color = 'rgb(100,100,100)';
+            text_color = 'rgb(255,255,255)';
+        }
+        //pos_x, pos_y, width, height
+        drawRect(60 + x_pos_array[i], 280 - (array[i] * 20), 40, 40 + (array[i] * 20), bar_color);
+
+        writeText(array[i], 75 + x_pos_array[i], 300, textcolor);
+    }
+}
+```
+
+
+

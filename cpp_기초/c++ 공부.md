@@ -38,167 +38,11 @@ terabyte (TB) = 2^10 GB = 1024 GB
 
 
 
-## 변수(variable★★) - 값을 저장하는 친구
+### 변수(variable★★) - 값을 저장하는 친구
 
 ### 자료형 (data type) = 데이터의 유형
 
-
-
-### 대입 연산자
-
-```cpp
- a = b;
-
-b의 값을 a에 대입한다.
-```
-
-
-
-### 부정 연산자
-
-```cpp
-bool a{ true };
-
-// a의 반대값(false)를 a에 대입한다.
-a = !a;
-```
-
-
-
-### 초기화
-
-```cpp
-int a{ 5 };
-//초기화는 변수 선언시에만 가능하다.
-//a{ 1 };
-
-int b;
-//초기화는 변수 선언시에만 가능하다.
-//b{ 3 };
-
-//초기화와 대입은 같이하지 못한다. {] 다음에 =를 쓰지 못한다.
-//int c{ 4 } = 1;
-```
-
-
-
-### life time(생성~소멸)
-
-```cpp
-void foo()
-{
-    //다음 줄에서 a가 생성된다.
-    int a{};
-    a = 10;
-    
-}// foo가 끝나면 a가 소멸된다.
-```
-
-
-
-### class / 구조체(struct)
-
-```cpp
-struct my_struct
-{
-    int value1{};
-    float value2{};
-    double value3{};
-}
-
-void foo()
-{
-    //★모든 변수는 사용하기 위해서 '이름(identify)'을 붙여야한다.
-    //구조체 이름에 .을 눌러봐야 아무일도 일어나지 않는다.
-    //main 에서 사용하기 위해서는 구조체의 이름에 .을 찍어야한다.
-    // -> my_struct.
-    
-    my_struct named{};
-    named.value1 = 10;
-    named.value2 = 10.0f;
-    named.value3 = 0.123;
-}
-```
-
-
-
-####  상속
-
-```cpp
-#include <string>
-
-enum class e_gender
-{ 
-    남자,
-    여자, 
-};
-
-//상속을 하는 클래스를 부모 클래스(perant class라고 한다.)
-class person
-{
-public:
-	person(string name, int age, e_gender gender) 
-        : m_name{ name }, m_age{ age }, m_gender{ gender } {};
-	~person() {};
-    
-protected:
-	string m_name{};
-	int m_age{};
-	e_gender m_gender{e_gender::남자};
-};
-
-//상속을 받는 클래스를 '자식 클래스'(child class)라고 부른다.
-class student : public person
-{
-public:
-	student(string name, int age, e_gender gender, string school, int grade) : 	
-	//자식 클래스에서 입력을 받아 부모 클래스의 멤버 변수의 값을 변경하고 싶다면, 
-	//'부모 클래스 이름(변수, 변수)'로 선언한다.
-	person(name, age, gender),
-	
-    m_school{ school }, m_grade{ grade } {};
-	~student() {};
-
-private:
-	string m_school{};
-	int m_grade{};
-};
-```
-
-
-
-```cpp
-// class는 '양식', '틀'이다.
-// 우리가 다뤄야할 것은 클래스의 '사본'이다.
-class avatar_system
-{
-public:
-	avatar_system() {};
-	~avatar_system() {};
-
-
-
-private:
-	avatar_base m_avatar{};
-	
-    /*m_avatar. X -> ★ 변수의 변경은 함수의 바디(body)에서만 한다.*/
-
-};
-
-int main()
-{
-    // my_avatar가 '사본' 즉, instance이다.
-    avatar_system my_avatar{};
-    
-    
-    return 0;
-}
-
-```
-
-
-
-### built-in types
+#### 빌트인 타입(builtin types)
 
 ```cpp
 char letter = 'a'
@@ -215,100 +59,80 @@ double double_point{123456789.123456}; // 8 byte
 unsigned int integer{100}; // 부호 없는 int (== 정수)
 ```
 
-
-
-### 배열(array)
-
+#### 내가 선언한 타입
 ```cpp
-// 배열을 사용하지 않았을 경우
-float score_korean{};
-float score_math{};
-float score_english{};
 
-score_korean = 100.0f;
-score_math = 97.1f;
-score_english = 32.1f;
-
-float CalculateAverage(float score_korean, float score_math, float score_english)
+struct SInt
 {
-    return (score_korean + score_math + score_english) / 3.0f;
-}
-```
+    int a{};
+    int b{};
+};
 
-```cpp
-// 배열을 사용했을 경우
-float scores[3];// [3]은 배열의 크기(size)를 의미하고, 배열의 크기는 내가 사용할 수 있는 항목의 갯수를 의미한다.
-// scores는 &scores[0]과 의미가 같다.
-
-scores[0] = 100.0f; // 배열의 0번 '항목(entry)'에 100.0f를 대입
-socres[1] = 97.1f;  // 배열의 1번 '항목(entry)'에 97.1f를 대입
-scores[2] = 32.1f;  // 배열의 2번 '항목(entry)'에 32.1f를 대입
-
-// 
-float CalculateAverage(float* ptr_scores)
+int main()
 {
-    return (ptr_scores[0] + ptr_scores[1] + ptr_scores[2]) / 3.0f;
+    SInt a;   
 }
+
 ```
 
 
+## 연산자
 
-### overflow, underflow
+### 대입 연산자
 
 ```cpp
-int a[5]{};
+ a = b;
 
-for(int i = 0; i < 10; ++i)
-{
-    //overflow 발생 (a[5]~a[9]는 접근하면 안됌)
-    a[i] = 2;
-}
+b의 값을 a에 대입한다.
+```
 
-int index{};
+### 부정 연산자
 
-for(int i = 0; i < 10; --i)
-{
- 	//underflow 발생 (a[-1]~a[-5]는 접근하면 안됌)
-    index = 4 - i;
-    a[index] = 1;
-    
-}
+```cpp
+bool a{ true };
+
+// a의 반대값(false)를 a에 대입한다.
+a = !a;
 ```
 
 
 
-#### 배열 복사하기(memcpy)!
+## 초기화
 
 ```cpp
-int a[5]{ 1, 2, 3, 4, 5 };
-int b[5]{};
+int a{ 5 };
+//초기화는 변수 선언시에만 가능하다.
+//a{ 1 };
 
+int b;
+//초기화는 변수 선언시에만 가능하다.
+//b{ 3 };
+
+//초기화와 대입은 같이하지 못한다. {] 다음에 =를 쓰지 못한다.
+//int c{ 4 } = 1;
+```
+
+
+## 지역변수와 전역변수
+
+### life time(생성~소멸) 
+
+
+
+```cpp
 void foo()
 {
-    // 배열을 복사하는 유일한 방법...
-    // 각 항목을 복사한다. 마법처럼 모든 항목을 동시에 복사할 수 없다.
-    b[0] = a[0];
-    b[1] = a[1];
-    b[2] = a[2];
-    b[3] = a[3];
-    b[4] = a[4];
-  
-    //or 반복문을 쓰니 조금 간결해졌다..
-    for (int i = 0; i < 5; ++i)
-    {
-        b[i] = a[i];
-    }
+    //다음 줄에서 a가 생성된다.
+    int a{};
+    a = 10;
     
-    // 반복문까지 한꺼번에 해주는 함수가 있다!
-    // 마지막 매개변수는 복사할 바이트 크기!
-    memcpy(b, a, sizeof(int) * 5);
-    
-}
+}// foo가 끝나면 a가 소멸된다.
 ```
 
+### 지역 변수를 전역 변수로 바꿔보자 (static)
 
 
-### static
+
 
 ```cpp
 #include "stack.h"
@@ -346,9 +170,204 @@ int main()
 
 
 
-### 반복문(loop) 용어
+## class / 구조체(struct)
 
-1. for 문 : 정해진 횟수만큼 반복하는 반복문
+```cpp
+struct my_struct
+{
+    int     value1{}; // 4
+    float   value2{}; // 4
+    double  value3{}; // 8
+}
+
+void foo()
+{
+    //★모든 변수는 사용하기 위해서 '이름(identify)'을 붙여야한다.
+    //구조체 이름에 .을 눌러봐야 아무일도 일어나지 않는다.
+    //main 에서 사용하기 위해서는 구조체의 이름에 .을 찍어야한다.
+    // -> my_struct.
+    
+    my_struct named{};
+    named.value1 = 10;
+    named.value2 = 10.0f;
+    named.value3 = 0.123;
+}
+```
+
+
+
+###  class의 상속
+
+```cpp
+#include <string>
+
+enum class e_gender
+{ 
+    남자,
+    여자, 
+};
+
+//상속을 하는 클래스를 부모 클래스(perant class라고 한다.)
+class person
+{
+public:
+	person(string name, int age, e_gender gender) 
+        : m_name{ name }, m_age{ age }, m_gender{ gender } {};
+	~person() {};
+    
+protected:
+	std::string m_name{};
+	int m_age{};
+	e_gender m_gender{e_gender::남자}; // e_gender == 0;
+};
+
+//상속을 받는 클래스를 '자식 클래스'(child class)라고 부른다.
+class student : public person
+{
+public:
+	student(string name, int age, e_gender gender, string school, int grade) : 	
+	//자식 클래스에서 입력을 받아 부모 클래스의 멤버 변수의 값을 변경하고 싶다면, 
+	//'부모 클래스 이름(변수, 변수)'로 선언한다.
+	person(name, age, gender), m_school{ school }, m_grade{ grade } {};
+
+	~student() {};
+
+private:
+	std::string m_school{};
+	int m_grade{};
+};
+```
+
+
+
+```cpp
+// class는 '양식', '틀'이다.
+// 우리가 다뤄야할 것은 클래스의 '사본'이다.
+class avatar_system
+{
+public:
+	avatar_system() {};
+	~avatar_system() {};
+
+
+
+private:
+	avatar_base m_avatar{};
+	
+    /*m_avatar. X -> ★ 변수의 변경은 함수의 바디(body)에서만 한다.*/
+
+};
+
+int main()
+{
+    // my_avatar가 '사본' 즉, instance이다.
+    avatar_system my_avatar{};
+    
+    
+    return 0;
+}
+
+```
+
+
+
+
+## 배열(array)
+
+```cpp
+// 배열을 사용하지 않았을 경우
+float score_korean{};
+float score_math{};
+float score_english{};
+
+score_korean = 100.0f;
+score_math = 97.1f;
+score_english = 32.1f;
+
+float CalculateAverage(float score_korean, float score_math, float score_english)
+{
+    return (score_korean + score_math + score_english) / 3.0f;
+}
+```
+
+```cpp
+// 배열을 사용했을 경우
+float scores[3];// [3]은 배열의 크기(size)를 의미하고, 배열의 크기는 내가 사용할 수 있는 항목의 갯수를 의미한다.
+// scores는 &scores[0](즉, 배열의 주소는 배열의 0번 항목이다.)과 의미가 같다.
+
+scores[0] = 100.0f; // 배열의 0번 '항목(entry)'에 100.0f를 대입
+socres[1] = 97.1f;  // 배열의 1번 '항목(entry)'에 97.1f를 대입
+scores[2] = 32.1f;  // 배열의 2번 '항목(entry)'에 32.1f를 대입
+
+float CalculateAverage(float* ptr_scores)
+{
+    return (ptr_scores[0] + ptr_scores[1] + ptr_scores[2]) / 3.0f;
+}
+```
+
+
+
+### 오버 플로우(overflow), 언더 플로우(underflow)
+
+```cpp
+int a[5]{};
+
+for(int i = 0; i < 10; ++i)
+{
+    // !! overflow 발생 (a[5]~a[9]는 접근하면 안됌)
+    a[i] = 2;
+}
+
+int index{};
+
+for(int i = 0; i < 10; --i)
+{
+ 	// !! underflow 발생 (a[-1]~a[-5]는 접근하면 안됌)
+    index = 4 - i;
+    a[index] = 1;
+    
+}
+```
+
+
+
+### 배열 복사하기(memcpy)!
+
+```cpp
+int a[5]{ 1, 2, 3, 4, 5 };
+int b[5]{};
+
+void foo()
+{
+    // 배열을 복사하는 유일한 방법...
+    // 각 항목을 복사한다. 마법처럼 모든 항목을 동시에 복사할 수 없다.
+    b[0] = a[0];
+    b[1] = a[1];
+    b[2] = a[2];
+    b[3] = a[3];
+    b[4] = a[4];
+  
+    //or 반복문을 쓰니 조금 간결해졌다..
+    for (int i = 0; i < 5; ++i)
+    {
+        b[i] = a[i];
+    }
+    
+    // 반복문까지 한꺼번에 해주는 함수가 있다!
+    // 마지막 매개변수는 복사할 바이트 크기!
+    memcpy(b, a, sizeof(int) * 5);
+    
+}
+```
+
+
+
+
+## 반복문(loop) 용어 
+
+### for 문 
+
+정해진 횟수만큼 반복하는 반복문
 
 ```cpp 
 //int i =[초기값, 비교값)
@@ -360,28 +379,31 @@ for (int i=0; i <5; ++i)
 }
 ```
 
-2. while 문 : 조건이 참일 동안 계속 반복되는 반복문
+### while 문 
 
-   ```cpp
-   bool should_loop{true};
-   
-   //esc키가 눌리면 true를 리턴해주는 함수
-   bool is_esc_pressed();
-   
-   while (should_loop)
-   {
-       std::cout << "반복 중이에양!";
-       
-       if (is_esc_pressed())
-       {
-           should_loop = false;
-       }
-   }
-   ```
+조건이 참일 동안 계속 반복되는 반복문
 
 
+    ```cpp
+    bool should_loop{true};
 
-### 형변환 (casting)
+    //esc키가 눌리면 true를 리턴해주는 함수
+    bool is_esc_pressed();
+
+    while (should_loop)
+    {
+        std::cout << "반복 중이에양!";
+        
+        if (is_esc_pressed())
+        {
+            should_loop = false;
+        }
+    }
+    ```
+
+
+
+## 형변환 (casting)
 
 ```cpp
 float f = 2.4f;
@@ -395,7 +417,7 @@ int b = static_cast<int>(f);
 
 
 
-### 상수(const, constexpr)
+## 상수(const, constexpr)
 
 ```cpp
 //변수 a와 b는 값이 변하지 않는다.
@@ -411,7 +433,7 @@ constexpr int b{ 8 };
 
 
 
-## 함수 - 일을 처리한다.
+# 함수 - 일을 처리한다.
 
 함수 사용법을 **(syntax)**라고 한다.
 

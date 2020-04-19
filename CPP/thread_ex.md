@@ -79,3 +79,54 @@ int main()
 	return 0;
 }
 ```
+
+```cpp
+//mutex! 의 구현
+#pragma once
+#include <thread>
+#include <chrono>
+
+class CheapMutex
+{
+public:
+	CheapMutex() {};
+	~CheapMutex() {};
+
+public:
+	void lock()
+	{
+		// 두개 이상의 쓰레드에서 하나의 변수에 쓰기 연산을 실행하려고 할때, 
+		// race condition을 방지하기 위해서 사용한다.
+
+		// 하나의 스레드가 lock 함수를 호출 했을때, 그 경우 lock을 true로 바꿔준다.
+		// 동기화 == 동시에 실행되는 여러 쓰레드를 하나의 시간대로 동기화 시킨다.
+
+		// bool a = false;
+		// "a가 false라고 치면"(X) "a는 false 이다"....!
+		while (_bLocked == true)
+		{
+			std::this_thread::sleep_for(std::chrono::microseconds(10));
+
+			if (_bLocked == false)
+			{
+				break;
+			}
+		}
+
+		_bLocked = true;
+	}
+
+	void unlock()
+	{
+		if (_bLocked == true)
+		{
+			_bLocked = false;
+		}
+	}
+
+private:
+	// 부울 변수를 말할때는 그 용도를 말해야한다.
+	bool _bLocked{ false };
+};
+
+```

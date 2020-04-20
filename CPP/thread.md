@@ -62,7 +62,7 @@ int main()
 
 
 
-#### 주 기억장치
+## 주 기억장치
 
  메모리(RAM = ramdon access memory) (지금 우리가 사용하는 대부분의 메모리) ( 메우 빠름)
 
@@ -144,24 +144,196 @@ context swicting도 명렁어이기 때문에 비용이 발생한다  == 꼭 빠
 
 
 
-#### undefinded hehavior
+## undefinded hehavior
 
 정의되지 않은 행동 - 
 
-####  race condition : 여러 스레드가 하나의 공간을 두고 접근할 때 발생할 수 있는 상황
+### 임계구역 - critical seccetion - 
 
-#### (최소한 한번이라도 "임계구역"에 ''쓰기'' 연산을 한다면  undefinded hehavior 가 발생할 수 있다.) 
+*** race condition : 여러 스레드가 하나의 공간을 두고 접근할 때 발생할 수 있는 상황***
 
-
-
-임계구역 - critical seccetion - 
+***(최소한 한번이라도 "임계구역"에 ''쓰기'' 연산을 한다면  undefinded hehavior 가 발생할 수 있다.) ***
 
 
+#### Atomic - 
 
-Atomic - 
+```cpp
+//아토믹을 선언하는 방법
+#include <atomic>
 
-mutural exclusion- 상호 배제
+// a는 2개 이상의 쓰레드가 동시에 쓰기연산으로 접근하는 변수이다.
+std::stomic<int> a{};
+```
 
+#### mutural exclusion- 상호 배제
+
+```cpp
+//mutex! 의 구현
+#pragma once
+#include <thread>
+#include <chrono>
+
+class CheapMutex
+{
+public:
+	CheapMutex() {};
+	~CheapMutex() {};
+
+public:
+	void lock()
+	{
+		// 두개 이상의, 쓰레드에서 하나의, 변수에 쓰기, 연산을 실행하려고 할때, 
+		// race condition을 방지하기 위해서 사용한다.
+
+		// 하나의 스레드가 lock 함수를 호출 했을때, 그 경우 lock을 true로 바꿔준다.
+		// 동기화 == 동시에 실행되는 여러 쓰레드를 하나의 시간대로 동기화 시킨다.
+
+		// bool a = false;
+		// "a가 false라고 치면"(X) "a는 false 이다"....!
+		while (_bLocked == true)
+		{
+			//std chrono의 생성자 함수에 접근
+			std::this_thread::sleep_for(std::chrono::microseconds(10));
+
+			if (_bLocked == false)
+			{
+				break;
+			}
+		}
+
+		_bLocked = true;
+	}
+
+	void unlock()
+	{
+		if (_bLocked == true)
+		{
+			_bLocked = false;
+		}
+	}
+
+private:
+	// 부울 변수를 말할때는 그 용도를 말해야한다.
+	bool _bLocked{ false };
+};
+```
+
+
+```cpp
+
+#include <thread>
+#include <atomic>
+#include <iostream>
+
+//k - 상수 g - 전역 _ - 맴버 e - 이넘
+std::atomic_int gValue{}; // (== std::atomic<int> gValue{};)
+
+// void plus(int& gValue) --> 가리는 변수 (사용 X)
+
+// 지역 변수는 쓰레드 동기화를 하지 않아도 된다. 지역 변수는 해당 지역을 벗어나면 사라짐으로, 동시에 두개의 쓰레드가 접근이 불가능하다.
+
+
+// 동기화 (synchrolization) 시간을 일치 시키는 것 / 둘이 일치시키는 것 
+// 쓰레드의 동기화 - 쓰레드가 보는 모든 메모리의 값들을 최신으로 맞춰준다...! (최신이 될 때까지 기다린다...!)
+
+// atominc / mutex(lock) 모두 동기화에 속한다.
+
+// 복수 코어일 때, CASHE COHERERENCY - 코어의 캐쉬마다 각각 다른 값을 가지고 있을 수 있기 때문에 캐쉬의 값을 동기화 해준다.
+void plus()
+{
+	int value{};
+
+	for (int i = 0; i < 10000; ++i)
+	{
+		value += i;
+	}
+
+	gValue += value;
+}
+
+int main()
+{
+	//쓰레드는 참조형을 못받을지도 모른다...?
+	std::thread threadA{ plus };
+
+	plus();
+
+	threadA.join();
+
+	printf("%d\n", gValue.load());
+
+
+	return 0;
+}
+```
+
+
+```cpp
+#include <thread>
+#include <iostream>
+#include <atomic>
+#include <mutex>
+//mutual exclusion - 상호 배제 // 잠그고 해제 하는 것을 해줘야함...!
+
+int main()
+{
+	// 임계 구역 (critical section - 중요한 부분)
+	// std::atomic<int> a{}; //한번 연산을 끝날 때까지는 다른 쓰레드가 접근하지 못하게 함.
+	// 다른 함수가 못건듦 (보호된 임계구역)
+	int a{}; 
+
+	int b{ 77 };
+
+	std::mutex mut{};
+
+	std::thread thr_add
+	{
+		[&]()
+		{
+			for (int i = 0; i < 10000; ++i)
+			{
+				mut.lock();
+				++a;	
+				mut.unlock();
+			}
+		}
+		//이것 자체가 하나의 명령어! 
+		//thread를 초기화
+	};
+
+	std::thread thr_subtract
+	{
+		[&]()
+		{
+			for (int i = 0; i < 10000; ++i)
+			{
+				mut.lock();
+				--a;
+				mut.unlock();
+			}
+		}
+	};
+
+	// 이 스레드가 끝날 때 까지 기다리겠다.
+	// 메인 스레드로 다시 와라 기다려라
+	thr_add.join(); 
+	thr_subtract.join();
+
+	std::cout << a;
+	//undefinded behavior 
+
+
+	//이름 대신에 []를 사용한다.
+	/*[]()
+	{
+
+	};*/
+
+	return 0;
+}
+```
+
+5. shift + F12
 
 
 

@@ -38,11 +38,11 @@ int main()
 
 ```cpp
 int a{};
-int* pa{ &a }; // pa가 저장하고 있는 주소는 0x00AABBC0
-++pa; // pa가 저장하고 있는 주소는 0x00AABBC4
+int* pa{ &a }; 	// pa가 저장하고 있는 주소는 0x00AABBC0
+++pa; 			// pa가 저장하고 있는 주소는 0x00AABBC4
 
 void* pany{ pa };
-++pany; // 컴파일 안 됨!!
+++pany; 		// 컴파일 안 됨!!
 ```
 
 ```cpp

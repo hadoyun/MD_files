@@ -1,4 +1,4 @@
-# encoding 인코딩
+# encoding 인코딩 과 decoding 디코딩
 
 ## 코드
 코드 = 부호, 혹은 암호  + en = 암호화
@@ -24,4 +24,3 @@ de + coding = 복호화
 #### BOM (byte order mark)
 **바이트 순서 표시,** 
 **한 단위가 2byte 이상일 때, 그 한 단위 내에서 어느 자리가 큰 자리인지 결정한다.**
-

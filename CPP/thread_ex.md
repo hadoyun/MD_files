@@ -37,7 +37,6 @@ int main()
 ```
 
 ```cpp
-
 #include <thread>
 #include <atomic>
 #include <iostream>
@@ -45,13 +44,19 @@ int main()
 //k - 상수 g - 전역 _ - 맴버 e - 이넘
 std::atomic_int gValue{};
 
+
 // void plus(int& gValue) --> 가리는 변수 (사용 X)
+
 // 지역 변수는 쓰레드 동기화를 하지 않아도 된다.
+
 // 동기화 (synchrolization) 시간을 일치 시키는 것 / 둘이 일치시키는 것 
-// 쓰레드의 동기화 - 쓰레드가 보는 모든 메모리의 값들을 최신으로 맞춰준다...! 
-// (최신이 될 때까지 기다린다...!)
+// 쓰레드의 동기화 - 쓰레드가 보는 모든 메모리의 값들을 최신으로 맞춰준다. == (최신이 될 때까지 기다린다.)
+
 // atominc / mutex(lock) 모두 동기화에 속한다.
+
 // 복수 코어일 때, CASHE COHERERENCY - 코어의 캐쉬마다 각각 다른 값을 가지고 있을 수 있기 때문에 캐쉬의 값을 동기화 해준다.
+
+
 void plus()
 {
 	int value{};
@@ -95,7 +100,7 @@ public:
 public:
 	void lock()
 	{
-		// 두개 이상의 쓰레드에서 하나의 변수에 쓰기 연산을 실행하려고 할때, 
+		// 두개 이상의, 쓰레드에서 하나의, 변수에 쓰기, 연산을 실행하려고 할때, 
 		// race condition을 방지하기 위해서 사용한다.
 
 		// 하나의 스레드가 lock 함수를 호출 했을때, 그 경우 lock을 true로 바꿔준다.
@@ -105,6 +110,7 @@ public:
 		// "a가 false라고 치면"(X) "a는 false 이다"....!
 		while (_bLocked == true)
 		{
+			//std chrono의 생성자 함수에 접근
 			std::this_thread::sleep_for(std::chrono::microseconds(10));
 
 			if (_bLocked == false)

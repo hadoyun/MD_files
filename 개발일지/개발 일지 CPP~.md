@@ -61,11 +61,45 @@ int main()
 
 ## 200417 network - UDP 
 
+UDP를 만들어 보자!
+
+### server 서버를 만드는 순서
+1. WSA 시작 
+2. 소켓 만들기 
+3. 소켓을 묶기 (bind) (서버 이기 때문에 만든다.)
+~ 소켓을 만들기 완료 
+4. (서버 이기 때문에) 
+5. 
 
 
 ```cpp
+#include <WinSock2.h>
+//윈소켓 소켓 시작하기
+WSADATA wsa_data{};
+int error{ WSAStartup(MAKEWORD(2, 2), &wsa_data) };
 
+//윈소켓 끝내기
+WSACleanup() 
 
+// 윈소켓 만들기 socket() -> 오류가 일어나지 않을 시(일어난다면 오류코드 리턴), 
+// AF_INET == The Internet Protocol version 4 (IPv4) address family.
+// SOCK_DRRAM == date gramm
+// UPPROTO_UDP == UDP 프로토콜 사용 
+m_server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+m_server_socket == INVALID_SOCKET
+
+// no error return 0 , otherwise return SOCKET_ERROR
+int socket_error = closesocket(m_server_socket);
+
+// get window socket error of last thread.
+WSAGetLastError();
+
+// bindSocket only be used in server
+// bind return error code
+sockaddr_int addr;
+
+// &addr 
+bind(m_server_socket, (sockaddr*)&addr, sizeof(addr))
 
 ```
 
@@ -85,8 +119,7 @@ struct s_test
 	int a;
 	int b;
 	int c;
-	int d;
-	int e;
+
 };
 
 //s_test* 라는 구조체를 참조형으로 받는다. (== s_test* 를 참조한다.)
@@ -94,57 +127,13 @@ void test_sort(s_test*& my_struct)
 {
 	// s_test의 맴버 변수들을 백터로 만들어보자.
 	// 포인터 자료형으로 만들어진 구조체에 접근 할시에는 -> 를 해준다.
-	std::vector<int> v_index{ my_struct->a, my_struct->b, my_struct->c, my_struct->d, my_struct->e };
-
-	//설계실패 vector에 int를 5개를 넣었음에도 불구하고 sort를 사용하지 않고 반복문으로 sort를 시도했다.;
-
-	//int temp{};
-
-	//a 와 b 를 sort 해보기
-	//if (form == false)
-	//{
-	//	for (int i = 0; i < (int)v_index.size() - 1; ++i)
-	//	{
-	//		if (i > i + 1)
-	//		{
-	//			temp = v_index[i];
-	//			v_index[i] = v_index[(size_t)(i + 1)];
-	//			v_index[(size_t)(i + 1)] = temp;
-	//		}
-	//	}
-	//	//대입
-	//	my_struct.a = v_index[0];
-	//	my_struct.b = v_index[1];
-	//	my_struct.c = v_index[2];
-	//	my_struct.d = v_index[3];
-	//	my_struct.e = v_index[4];
-	//}
-	//else
-	//{
-	//	for (int i = 0; i < (int)v_index.size() - 1; ++i)
-	//	{
-	//		if (i < i + 1)
-	//		{
-	//			temp = v_index[i];
-	//			v_index[i] = v_index[(size_t)(i + 1)];
-	//			v_index[(size_t)(i + 1)] = temp;
-	//		}
-	//	}
-	//	//대입
-	//	my_struct.a = v_index[0];
-	//	my_struct.b = v_index[1];
-	//	my_struct.c = v_index[2];
-	//	my_struct.d = v_index[3];
-	//	my_struct.e = v_index[4];
-	//}
+	std::vector<int> v_index{ my_struct->a, my_struct->b, my_struct->c };
 
 	sort(v_index.begin(), v_index.end());
 
 	my_struct->a = v_index[0];
 	my_struct->b = v_index[1];
 	my_struct->c = v_index[2];
-	my_struct->d = v_index[3];
-	my_struct->e = v_index[4];
 }
 
 int main()
@@ -158,10 +147,7 @@ int main()
 	std::cout << v_test[0]->a << ' ';
 	std::cout << v_test[0]->b << ' ';
 	std::cout << v_test[0]->c << ' ';
-	std::cout << v_test[0]->d << ' ';
-	std::cout << v_test[0]->e << ' ';
 
-	
 	test_sort(*&v_test[0]);
 
 	printf("\n \n after sort: \n \n");
@@ -169,8 +155,6 @@ int main()
 	std::cout << v_test[0]->a << ' ';
 	std::cout << v_test[0]->b << ' ';
 	std::cout << v_test[0]->c << ' ';
-	std::cout << v_test[0]->d << ' ';
-	std::cout << v_test[0]->e << ' ';
 	
 	delete v_test[0];
 
@@ -178,3 +162,22 @@ int main()
 }
 
 ```
+
+## 200423
+
+
+
+
+## VS bebugind tips
+
+1. 초록색 화살표 이용하기, (생략할 수 있다.)
+
+2. 디버깅 시 변수 위에 마우스를 올리면 뜨는 옆에 고정를 누르면 변수 변화를 실시간으로 볼 수 있다.
+(특히 배열 일경우에는 각 항목에 들어있는 변수들을 확인 가능하다.)
+![](Screenshot 2020-04-21 at 23.17.12.png)
+![](Screenshot 2020-04-21 at 23.22.03)
+
+3. 
+
+
+

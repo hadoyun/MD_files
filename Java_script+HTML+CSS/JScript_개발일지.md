@@ -99,4 +99,68 @@ function drawArray()
 ```
 
 
+# TODO list 만들어보기
 
+```html
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>TODO list</title>
+</head>
+<style>
+ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 500px;
+}
+ul li{
+    border: 1px solid #ccc;
+    background-color: aqua;
+    padding: 5px 10px;
+}
+ </style>
+
+<body>
+    <h1>to do List</h1>
+        <button id = "btnAdd"> NEW Item </button>
+    <ul id = "todoList">
+    <!-- checkBox 요소 추가 -->
+        <li><input type ="checkBox"/> <span>write First item</span> </li>
+    </ul>
+
+    <script src = "main.js"></script>
+</body>
+</html>
+
+```
+
+
+```js
+// main.js
+<script>
+    var btn_new = document.getElementById('btnAdd');
+    
+    btn_new.onclick = function(){
+        addNewItem(document.getElementById("todoList"));
+    };
+
+    function addNewItem(list) {
+        var list_item = document.createElement('li');
+        list_item.innerText = "Start!";
+        list.appendchild(list_item);
+    }   
+</script>
+```
+
+JS에서 변수 형까지 맞는지 확인하는 연산자는 "==="이라고 쓴다.
+```js
+function addNewItem(list) {
+    var input_text = document.getElementById("input_text");
+    var item_text = input_text.nodeValue;
+    
+    if(!item_text || item_text === "" || item_text === " " ) return false;
+}   
+
+```

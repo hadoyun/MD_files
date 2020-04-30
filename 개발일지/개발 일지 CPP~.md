@@ -172,6 +172,86 @@ int main()
 ## 200425
 
 
+
+## 200430
+
+
+```cpp
+class TextFile
+{
+private:
+	// const int _KbufferSize{ 300 };
+	// Good !!
+	static const int _KbufferSize{ 300 };
+	char _fileName[_KbufferSize]{};
+	std::string _data{};
+};
+```
+
+***비정적 맴버는 특정 개체에 상대적이야 합니다. ***
+
+클래스는 생성자가 호출됬을때 맴버 변수 / 맴버 함수 순으로 생성되기 때문에 
+char _fileName[_KbufferSize]{}; 와 같이 정적인 배열을 생성 하거나, 혹은 전역 변수가 필요할 경우
+**static** 키워드를 사용해서 전역변수처럼 만들어 준다.
+
+
+
+
+
+```cpp
+//파일 이름을 받아 텍스트를 읽어오는 함수 
+void TextFile::openText(const char* _fileName)
+{
+	std::ifstream ifs{};
+
+	ifs.open(_fileName, std::ios_base::in);
+	
+
+	//RAII - 범위를 벗어나면 자동종료 but 한번더 open 해주면 열어줘야함.
+	if (ifs.is_open())
+	{
+		_data.clear();
+
+		//한글자씩 읽어옴
+		//_ifs.get();
+		
+		char buffer[_KbufferSize]{};
+
+		while (!ifs.eof())
+		{	
+			//배열이 포인터가 되는순간 퇴화(decay)한다.. ㅠ; (배열의 길이에 대한 정보가 사라진다...!)
+			//따라서 포인터로 받을때는 사이즈를 알려줘야한다.
+			ifs.getline(buffer, _KbufferSize);
+			
+			//" " buffer "\n" ~
+			_data += " ";
+			_data += buffer;
+			_data += "\n";
+		}
+
+	}
+}
+
+
+void TextFile::display()
+{
+	std::cout << _data << "\n";
+}
+```
+
+1. std::ifstream 의 이해, ifstraam 함수는 소멸자를 호출 했을때, std::ifstream::close() 함수를 호출함.
+따라서 따로 std::ifstream의 close()를 호출할 필요가 없다.
+
+2. 배열이 포인터가 되는순간 퇴화(decay)한다.. ㅠ; (배열의 길이에 대한 정보가 사라진다...!) 
+따라서 포인터로 받을때는 사이즈를 알려줘야한다.
+
+3. while 문 사용 하기, while문은 ()안이 트루가 될때 반복한다. (보충 설명 듣기 - 까먹음 )
+
+4. 함수를 너무 자세히 쪼개지는 말자... ㅜㅜ; 
+
+
+
+
 ## VS bebugind tips
 
 1. 초록색 화살표 이용하기, (생략할 수 있다.)

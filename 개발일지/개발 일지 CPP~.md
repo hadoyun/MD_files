@@ -228,7 +228,6 @@ void TextFile::openText(const char* _fileName)
 			_data += buffer;
 			_data += "\n";
 		}
-
 	}
 }
 
@@ -250,6 +249,184 @@ void TextFile::display()
 4. 함수를 너무 자세히 쪼개지는 말자... ㅜㅜ; 
 
 
+## file 입출력 (binary)
+
+되도록이면 의미가 같은 함수를 묶어주자...!
+
+***2진, 즉, binary로 파일을 저장해보자..!***
+
+```cpp
+#pragma once
+#include <vector>
+
+using byte = unsigned char;
+using int32 = int32_t;
+using uint32 = uint32_t;
+
+class BinaryFile
+{
+public:
+	BinaryFile();
+	~BinaryFile();
+public:
+	void load(const char* fileName); //파일을 저장하고 로드한다.
+	void save(const char* fileName);
+public:
+	void clear(); // _vData를 벡터의 clear 메소드를 통해 초기화 한다. { _vData.clear(); }
+	void write(int32 value);
+	void write(char value);
+
+public:
+	bool canRead(uint32 count) const; // 읽을 수 있는지 없는지 확인해주는 함수
+	
+	int32 readInt32() const; 
+	char readChar() const;
+
+private:
+	//파일의 데이터를 byte 단위로 넣어서 보관할 벡터
+	std::vector<byte> _vData{};
+	//const 함수 여도 바꿀 수 있도록...! 의미상 const 는 맞는 함수를 const해주기 위해서 
+	mutable uint32 _at{};
+};
+
+```
+
+
+```cpp
+void BinaryFile::load(const char* fileName)
+{
+	std::ifstream ifs{};
+
+	//ifs.open 메소드의 2번째 인수 == std::ios_base는 in 나 binary등의 객체를 | 연산으로 같이 적용하는 것이 가능하다.
+	ifs.open(fileName, std::ios_base::in | std::ios_base::binary);
+
+	if (ifs.is_open() == true)
+	{
+		std::cout << "파일이 열렸어양! \n";
+
+		while (ifs.eof() == false)
+		{
+			_vData.emplace_back(ifs.get());
+		}
+		// 디버그 확인용, vector<byte>_vData에 byte가 들어가는지 확인한다.
+		// DebugBreak(); 
+	}
+	else
+	{
+		std::cout << "파일이 여는데 실패했어양! \n";
+	}
+}
+
+
+```
+
+***알고리즘!***
+
+
+```cpp
+// O자형 블록
+	{
+		_blocks[(int)EBlockType::O][(int)EDirection::N].set(
+			1, 1, 0, 0,
+			1, 1, o, 0,
+			0, 0, 0, 0,
+			0, 0, 0, 0
+		);
+
+		//모두 바꾸기 '단어 단위' alt + A == 모두 바꾸기 
+		_blocks[(int)EBlockType::O][(int)EDirection::W].set();
+		_blocks[(int)EBlockType::O][(int)EDirection::S].set();
+		_blocks[(int)EBlockType::O][(int)EDirection::E].set();
+	}
+
+```
+
+```cpp
+	// grey scale 전부다 무채색..! 
+	// RGB가 서로 다를 수록 채도가 높아진다...!
+
+	createBlock(EBlockType::I,		Color(255, 100, 100));
+	createBlock(EBlockType::T,		Color(100, 240, 130));
+	createBlock(EBlockType::O,		Color(100, 100, 255));
+	createBlock(EBlockType::L,		Color(250, 250, 100));
+	createBlock(EBlockType::InvL,	Color(100, 250, 250));
+	createBlock(EBlockType::Z,		Color(240, 160,  50));
+	createBlock(EBlockType::InvZ,	Color(255, 127, 255));
+```
+
+
+
+**const 함수에서 값을 바꿀 수 있는 mutable!**
+
+```cpp
+bool fs::SimpleTetris::tickTimer() const
+{
+	using namespace std::chrono;
+
+	auto elapsed = duration_cast<milliseconds>(steady_clock::now() - _prevTime);
+
+	if (elapsed.count() >= _timerInterval)
+	{
+		_prevTime = steady_clock::now();
+
+		return true;
+	}
+	return false;
+}
+/// in class 
+public:
+mutable std::chrono::steady_clock::time_point _prevTime{};
+```
+
+
+## 되도록 서순으로 조건문 작성하기 
+
+
+```cpp
+oid fs::SimpleTetris::checkBingo()
+{
+	int32 currentY{ (int32)kBoardSize.y - 1 };
+	
+	uint32 bingoCount{};
+
+	while (currentY >= 0)
+	{
+		bool isBingo{ true }; // 기본 값이 false
+		for (uint32 x = 0; x < (uint32)kBoardSize.x; ++x)
+		{
+			if (_aaBoard[currentY][x] == 0)
+			{
+				isBingo = false; // 서순
+				break;
+			}
+		}
+		if (isBingo == true)
+		{
+			for (int32 y = currentY - 1; y >= 0; --y) // 확신이 들지 않는다면 unsigned를 쓰면 안된다.
+			{
+				memcpy(_aaBoard[y + 1], _aaBoard[y], (size_t)kBoardSize.x);
+			}
+			++bingoCount;
+		}
+		else
+		{
+			--currentY;
+		}
+	}
+	_score += (bingoCount * bingoCount) * 100;
+}
+
+
+```
+
+
+
+
+한 프로젝트가 다른 프로젝트를 참조하거나 간접적으로 사용할때, 
+shift + ctrl + B 를 눌러서 '솔루션' 빌드 해야한다. (아니면 오류떠용!)
+
+
+
 
 
 ## VS bebugind tips
@@ -262,6 +439,3 @@ void TextFile::display()
 ![](Screenshot 2020-04-21 at 23.22.03)
 
 3. 
-
-
-

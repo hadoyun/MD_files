@@ -356,7 +356,7 @@ void BinaryFile::load(const char* fileName)
 
 
 
-**const 함수에서 값을 바꿀 수 있는 mutable!**
+**const 함수에서 값을 바꿀 수 있게 해주는 mutable!**
 
 ```cpp
 bool fs::SimpleTetris::tickTimer() const
@@ -422,12 +422,222 @@ oid fs::SimpleTetris::checkBingo()
 
 
 
-한 프로젝트가 다른 프로젝트를 참조하거나 간접적으로 사용할때, 
-shift + ctrl + B 를 눌러서 '솔루션' 빌드 해야한다. (아니면 오류떠용!)
+
+## 별명을 모아 두는 header!
+
+```cpp
+#pragma once
+#include <cstdint>
+
+namespace hady 
+{
+	using int8 = int8_t;
+	using int32 = int32_t;
+	using uint8 = uint8_t;
+	using uint32 = uint32_t;
+	using uint64 = uint64_t;
+}
+```
+
+
+# 타이머 클래스 설정하기
+
+timer 란? 정해놓은 시각에 따라 신호(혹은 동작)(을)를 발생시키는 장치 
+
+timer가 해야할일 
+
+1. 타이머를 세팅(시작)한다.
+
+2. 일정 시간 이후에 알림(bool)
+
+
+```cpp
+using uint64 = uint64_t;
+using uint32 = uint32_t;
+//tick 함수 , elapsed == 현재 시간 - 시작시간
+bool CheapTimer::tick() const
+{
+	uint64 elapsed = std::chrono::steady_clock::now().time_since_epoch().count() - _startTime;
+
+	switch (_unit)
+	{
+	case hady::CheapTimer::EUnit::second:
+		elapsed /= 1'000'000'000;
+		break;
+	case hady::CheapTimer::EUnit::milli:
+		elapsed /= 1'000'000;
+		break;
+	case hady::CheapTimer::EUnit::micro:
+		elapsed /= 1'000;
+		break;
+	case hady::CheapTimer::EUnit::nano:
+		//elapsed *= 1;
+		__noop;
+		break;
+	default:
+		break;
+	}
+
+	if (elapsed >= _interval) return true;
+	return false;
+}
+```
 
 
 
 
+
+```cpp
+#pragma once
+#include "Common.h"
+#include <chrono>
+
+//몇 초에 한번 지났는지 알려주는 아이
+namespace hady 
+{
+	
+	class CheapTimer
+	{
+	public:
+	//구조체를 class 내부에서 사용하기 위해서는??
+		enum class EUnit
+		{
+			second,
+			milli,
+			micro,
+			nano,
+		};
+
+	public:
+		CheapTimer();
+		~CheapTimer();
+
+	public:
+		void set(uint32 interval, EUnit unit)
+		{
+			_unit = unit;
+
+			_interval = interval;
+		}
+		void reset();
+		
+		void start()
+		{
+			_startTime = std::chrono::steady_clock::now().time_since_epoch().count();
+		}
+
+		bool tick() const;
+
+	private:
+		uint32			_interval{}; //
+		uint64			_startTime{};
+		EUnit			_unit{ EUnit::second };
+	};
+}
+```
+
+## toggle
+
+```cpp
+bool isPause() const
+{
+	if (_pauseFlag == 0)
+	{
+		_pause = true;
+		++_pauseFlag;
+	}
+	else if (_pauseFlag == 1)
+	{
+		_pause = false;
+		--_pauseFlag;
+	}
+};
+```
+
+```cpp
+bool isPause() const
+{
+	int count{};
+
+	if (_pauseCount%2 == 1)
+	{
+		_pause = true;
+		++_pauseCount;
+	}
+	else if (_pauseCount%2 == 0)
+	{
+		_pause = false;
+		++_pauseCount;
+	}
+};
+```
+
+
+**함수를 이해하면 코드가 짧아진다..!**
+
+```cpp
+bool isPause() const
+{
+	if (_pause == true)
+	{
+		_pause = false;
+		return true;
+	}
+	else (_pause == false)
+	{
+		_pause = true;
+		return false;
+	}
+};
+```
+
+
+
+
+**정적 할당**
+실제 할당은 런타임에서 이루어지만, 얼마만큼의 메모리를 사용할지 미리 알고 있는 경우에 사용한다.
+
+```cpp
+int a {};
+
+
+```
+
+**동적 할당**
+
+new 연산자는 '할당된 메모리의 주소'를 리턴하기 때문에 생성된 메모리의 주소를 받기 위해서는 
+자료형을 포인터로 사용해야한다.
+
+'동적으로 할당된 메모리'를 해제하기 위해서 delete를 사용해야한다.
+```cpp
+int* a = new int;
+
+delete a;
+a = nullptr;
+```
+
+
+
+
+
+```cpp
+bool a = false;
+bool b = true;
+
+bool ab { a != a };
+
+a = !b;
+```
+
+
+
+
+
+
+
+
+
+# 디버깅 !!
 
 ## VS bebugind tips
 
@@ -439,3 +649,36 @@ shift + ctrl + B 를 눌러서 '솔루션' 빌드 해야한다. (아니면 오�
 ![](Screenshot 2020-04-21 at 23.22.03)
 
 3. 
+
+
+
+
+### 솔루션 디버깅
+
+한 프로젝트가 다른 프로젝트를 참조하거나 간접적으로 사용할때, 
+shift + ctrl + B 를 눌러서 '솔루션' 빌드 해야한다. (아니면 오류떠용!)
+
+
+디버깅 용으로 솔루션을 빌드 했을 때만, 특정 함수가 실행되게 하고 싶을 때
+
+```cpp
+#if defined DEBUG || _DEBUG
+if (GetAsyncKeyState('W') == SHORT(0x8001))
+{
+	auto timerInterval{ g_simpleTetris.getTimerInterval() };
+
+	g_simpleTetris.setTimerInterval(timerInterval - 50);
+}
+if (GetAsyncKeyState('Q') == SHORT(0x8001))
+{
+	auto currBlockType = g_simpleTetris.getCurrBlockType();
+	uint32 iNextBlockType{ (uint32)currBlockType + 1 };
+	if (iNextBlockType >= (uint32)EBlockType::MAX)
+	{
+		iNextBlockType = 2;
+	}
+	g_simpleTetris.setCurrBlockType((EBlockType)iNextBlockType);
+}
+#endif 
+
+```

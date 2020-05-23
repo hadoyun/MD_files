@@ -1123,3 +1123,5 @@ bool canCoverBoard(vector<vector<int>>& vv_board, int offset_x, int offset_y, in
 	return can_cover;
 }
 ```
+
+

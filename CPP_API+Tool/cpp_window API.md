@@ -66,7 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//wnd_class.cbClsExtra = 0;
 	//wnd_class.cbWndExtra = 0;
 	// 포인터의 정보손실 때문에 wnd_class{}의 사이즈 요구 == sizeof(WNDCLASSEX)로 사이즈 계산
-	wnd_class.cbSize = sizeof(WNDCLASSEX);
+	wnd_class.cbSize = sizeof(wnd_class);
 	// 배경을 어떤 브러쉬로 칠할 것인가?  -원래 저장되어있는 오브젝트를 쓰기위해서 GetStockObject 사용
 	// GetStockObject는 HGDIOBJ로 리턴한다.
 	// GDIOBJ는 브러시, 팔레트, 비트맵, 폰트 등...이 있다.

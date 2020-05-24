@@ -4,6 +4,8 @@
 
 [Ctrl] + [Shift] + [F]: 솔루션 전체에서 찾기
 
+[Ctrl] + [Shift] + [A]: 해당 필터에 새 항목 추가
+
 [Ctrl] + [,]: 정의/선언 목록
 
 [Ctrl] + [J]: 인텔리센스 힌트 띄우기
@@ -14,9 +16,9 @@
 
 [Ctrl] + [상/하]: 한 줄 씩 스크롤
 
-[Alt] + [상/하]: 줄 옮기기
+[Alt] + [상/하]: 헹 옮기기
 
-[Alt] + [PageUp] or [PageDown]: 오류 줄로 바로 가기
+[Alt] + [PageUp] or [PageDown]: 오류가 있는 행으로 바로 가기
 
 [ctrl] + [r] + [r]: 이름 바꾸기
 

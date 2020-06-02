@@ -257,3 +257,161 @@ int main()
 
 논리 연산자 (&& || ^ !)
 
+
+
+
+```cpp
+#include <iostream>
+#include <vector>
+
+//TODO 동적 메모리의 심화적인 활용
+
+struct book
+{
+	int number{};
+	const char* title{};
+};
+
+void showBook(book* book, int n)
+{
+	printf(" %d의 항목에 %s 책이 있습니다.\n", book->number, book->title);
+	
+	if (n > 1)
+	{
+		showBook((book + 1), n - 1);
+	}
+}
+
+// //혹은
+// void showBook(book* book, int n)
+// {
+// 	for(int i = 0; i < n; ++i>)
+// 	{
+// 		printf("번호 %d  : %s \n", (book+i)->number, (book+i)->title);
+// 	}
+// }
+
+int main()
+{
+	book *bk{};
+
+	bk = (book*)malloc(2 * sizeof(book));
+
+	if (bk == NULL)
+	{
+		printf("동적 메모리 할당에 실패했습니다. \n");
+		exit(1);
+	}
+	
+	bk->number = 1;
+	bk->title = "그 많던 싱아를 누가 다 먹었나?";
+
+	(bk + 1)->number = 2;
+	(bk + 1)->title = "자료 구조";
+
+	showBook(bk, 2);
+
+	free(bk);
+
+	book* ptr = (bk + 1);
+
+	return 0;
+}
+```
+
+
+```cpp
+#include <iostream>
+#include <vector>
+
+//TODO 동적 메모리의 심화적인 활용
+
+struct book
+{
+	int number{};
+	char title[100]{};
+	//const char* 형이 훨씬 더 편리하게 사용할 수 있다.
+};
+
+void showBook(book* book, int n)
+{
+	printf(" %d의 항목에 %s 책이 있습니다.\n", book->number, book->title);
+	
+	if (n > 1)
+	{
+		showBook((book + 1), n - 1);
+	}
+}
+
+int main()
+{
+	book *bk{};
+
+	bk = (book*)malloc(2 * sizeof(book));
+
+	if (bk == NULL)
+	{
+		printf("동적 메모리 할당에 실패했습니다. \n");
+		exit(1);
+	}
+	
+	bk->number = 1;
+	strcpy_s(bk->title, "노인과 바다");
+
+	(bk + 1)->number = 2;
+	strcpy_s((bk + 1)->title, "리버 보이");
+
+	showBook(bk, 2);
+
+	free(bk);
+
+	return 0;
+}
+```
+
+```cpp
+#include <iostream>
+#include <vector>
+
+//TODO 동적 메모리의 심화적인 활용
+
+int main()
+{
+
+	int** pptr = (int**)malloc(sizeof(int*) * 8);
+
+	// 6개의 공간을 다시 8번 생성시켜준다.
+	for (int i = 0; i < 8; ++i)
+	{
+		*(pptr + i) = (int*)malloc(sizeof(int) * 6);
+	}
+
+	int z{};
+
+	//pptr의 각 항목 초기화
+	for (int y = 0; y < 8; ++y)
+	{
+		for (int x = 0; x < 6; ++x)
+		{
+			*(*(pptr + y) + x) = 6 * y + x;
+		}
+	}
+
+	for (int y = 0; y < 8; ++y)
+	{
+		for (int x = 0; x < 6; ++x)
+		{
+			printf("%3d", *(*(pptr + y) + x));
+		}
+		printf("\n");
+	}
+	
+	for (int y = 0; y < 8; ++y)
+	{
+		free(*(pptr + y));	
+	}
+	//// 반면 cpp vector 혹은 배열을 사용할경우
+
+	return 0;
+}
+```

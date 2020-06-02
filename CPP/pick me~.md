@@ -52,3 +52,44 @@ printf(dst); //dst는 널문자로 끝나지 않는 문자열이므로 print(dst
 //널문자가 나올때까지 계속 출력 된다.
 ```
 
+
+
+```cpp
+#include <iostream>
+#include <vector>
+
+// uint32_t 이지 uint32가 아니다...
+// scant_f는 const char& (문자열만) 받을 수 있다.
+
+uint32_t countTwo(double x, uint32_t count)
+{
+	uint32_t result{};
+
+	if(x >= 2)
+	{ 
+		++count;
+		countTwo((x/2), count);
+	}
+	else
+	{
+		result = count;
+
+		return result;
+	}
+}
+
+int main()
+{
+	uint32_t count{};
+	double x{};
+
+	std::cin >> x;
+
+	int r = countTwo(x, count);
+
+	printf("%d", r);
+
+
+	return 0;
+}
+```

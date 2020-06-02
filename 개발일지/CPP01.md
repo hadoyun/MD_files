@@ -1125,3 +1125,10 @@ bool canCoverBoard(vector<vector<int>>& vv_board, int offset_x, int offset_y, in
 ```
 
 
+## 함수에 시그니쳐가 포함되어있지 않습니다.
+```cpp
+	float getWorth();
+	//함수의 시그니처가 포함되어있지 않은 형태
+	float getWorth{};
+
+```
